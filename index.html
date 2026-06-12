@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blood Bank Management System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== LOGIN SCREEN ===================== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">🩸 <span>Blood Bank</span></div>
+      <div class="login-sub">Management System — Admin Login</div>
+
+      <label for="loginUser">Username</label>
+      <input type="text" id="loginUser" value="admin">
+
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" value="admin123">
+
+      <button id="loginBtn" class="btn btn-primary btn-full">Sign In</button>
+
+      <div class="login-hint">Default: admin / admin123</div>
+      <div id="loginError" class="login-error hidden">Invalid username or password.</div>
+    </div>
+  </div>
+
+  <!-- ===================== APP ===================== -->
+  <div id="appScreen" class="app hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-title">🩸 Blood Bank</div>
+        <div class="brand-sub">Management System</div>
+      </div>
+
+      <nav class="nav">
+        <a href="#" class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="#" class="nav-item" data-page="donors"><span class="nav-icon">👤</span> Donors</a>
+        <a href="#" class="nav-item" data-page="hospitals"><span class="nav-icon">🏥</span> Hospitals</a>
+        <a href="#" class="nav-item" data-page="donations"><span class="nav-icon">🩸</span> Donations</a>
+        <a href="#" class="nav-item" data-page="requests"><span class="nav-icon">📋</span> Blood Requests</a>
+        <a href="#" class="nav-item" data-page="inventory"><span class="nav-icon">📦</span> Inventory</a>
+      </nav>
+
+      <div class="sidebar-search">
+        <input type="text" placeholder="Search..." id="globalSearch">
+      </div>
+
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+
+      <!-- ============ DASHBOARD ============ -->
+      <section id="page-dashboard" class="page">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Overview of blood bank operations</p>
+
+        <div class="stat-grid" id="dashboardStats"></div>
+
+        <div class="two-col">
+          <div class="card">
+            <h2 class="card-title">Blood Inventory</h2>
+            <div class="inventory-grid" id="dashboardInventory"></div>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">Urgent Requests</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>HOSPITAL</th><th>GROUP</th><th>UNITS</th><th>PRIORITY</th></tr>
+                </thead>
+                <tbody id="urgentRequestsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DONORS ============ -->
+      <section id="page-donors" class="page hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Donors</h1>
+            <p class="page-subtitle">Manage blood donors</p>
+          </div>
+          <button class="btn btn-primary" id="openDonorModal">+ Register Donor</button>
+        </div>
+
+        <p class="record-count" id="donorCount"></p>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>NAME</th><th>AGE</th><th>GENDER</th>
+                  <th>BLOOD GROUP</th><th>PHONE</th><th>LAST DONATION</th><th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="donorsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ HOSPITALS ============ -->
+      <section id="page-hospitals" class="page hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Hospitals</h1>
+            <p class="page-subtitle">Manage partner hospitals and recipients</p>
+          </div>
+          <button class="btn btn-primary" id="openHospitalModal">+ Add Hospital</button>
+        </div>
+
+        <p class="record-count" id="hospitalCount"></p>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>HOSPITAL NAME</th><th>CONTACT PERSON</th>
+                  <th>PHONE</th><th>EMAIL</th><th>ADDRESS</th><th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="hospitalsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DONATIONS ============ -->
+      <section id="page-donations" class="page hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Donations</h1>
+            <p class="page-subtitle">Record and approve blood donations</p>
+          </div>
+          <button class="btn btn-primary" id="openDonationModal">+ Record Donation</button>
+        </div>
+
+        <p class="record-count" id="donationCount"></p>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>DONOR</th><th>BLOOD GROUP</th><th>UNITS</th>
+                  <th>DATE</th><th>STATUS</th><th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="donationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ BLOOD REQUESTS ============ -->
+      <section id="page-requests" class="page hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Blood Requests</h1>
+            <p class="page-subtitle">Manage hospital blood requests</p>
+          </div>
+          <button class="btn btn-primary" id="openRequestModal">+ New Request</button>
+        </div>
+
+        <p class="record-count" id="requestCount"></p>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>HOSPITAL</th><th>BLOOD GROUP</th><th>UNITS</th>
+                  <th>REQUEST DATE</th><th>REQUIRED BY</th><th>PRIORITY</th>
+                  <th>STATUS</th><th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="requestsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ INVENTORY ============ -->
+      <section id="page-inventory" class="page hidden">
+        <h1 class="page-title">Blood Inventory</h1>
+        <p class="page-subtitle">Current stock levels by blood group</p>
+
+        <div class="stat-grid stat-grid-3" id="inventoryStats"></div>
+
+        <div class="inventory-grid inventory-grid-page" id="inventoryGrid"></div>
+
+        <div class="card">
+          <h2 class="card-title">Inventory Details</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>BLOOD GROUP</th><th>UNITS AVAILABLE</th><th>UNITS USED</th>
+                  <th>LAST UPDATED</th><th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryDetailsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===================== MODALS ===================== -->
+
+  <!-- Register Donor -->
+  <div class="overlay hidden" id="donorModalOverlay">
+    <div class="modal">
+      <h2 class="modal-title">Register New Donor</h2>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Full Name</label>
+          <input type="text" id="donorName">
+        </div>
+        <div class="form-field">
+          <label>Age</label>
+          <input type="number" id="donorAge">
+        </div>
+        <div class="form-field">
+          <label>Gender</label>
+          <select id="donorGender">
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Blood Group</label>
+          <select id="donorBloodGroup">
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Phone</label>
+          <input type="text" id="donorPhone">
+        </div>
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" id="donorEmail">
+        </div>
+        <div class="form-field form-field-wide">
+          <label>Address</label>
+          <input type="text" id="donorAddress">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" data-close="donorModalOverlay">Cancel</button>
+        <button class="btn btn-primary" id="registerDonorBtn">Register</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Hospital -->
+  <div class="overlay hidden" id="hospitalModalOverlay">
+    <div class="modal">
+      <h2 class="modal-title">Add Hospital</h2>
+      <div class="form-grid">
+        <div class="form-field form-field-wide">
+          <label>Hospital Name</label>
+          <input type="text" id="hospitalName">
+        </div>
+        <div class="form-field">
+          <label>Contact Person</label>
+          <input type="text" id="hospitalContact">
+        </div>
+        <div class="form-field">
+          <label>Phone</label>
+          <input type="text" id="hospitalPhone">
+        </div>
+        <div class="form-field form-field-wide">
+          <label>Email</label>
+          <input type="email" id="hospitalEmail">
+        </div>
+        <div class="form-field form-field-wide">
+          <label>Address</label>
+          <input type="text" id="hospitalAddress">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" data-close="hospitalModalOverlay">Cancel</button>
+        <button class="btn btn-primary" id="addHospitalBtn">Add Hospital</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Record Donation -->
+  <div class="overlay hidden" id="donationModalOverlay">
+    <div class="modal">
+      <h2 class="modal-title">Record Donation</h2>
+      <div class="form-grid">
+        <div class="form-field form-field-wide">
+          <label>Donor</label>
+          <select id="donationDonor"></select>
+        </div>
+        <div class="form-field">
+          <label>Blood Group</label>
+          <select id="donationBloodGroup">
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Units</label>
+          <input type="number" id="donationUnits" value="1" min="1">
+        </div>
+        <div class="form-field form-field-wide">
+          <label>Date</label>
+          <input type="date" id="donationDate">
+        </div>
+        <div class="form-field form-field-wide">
+          <label>Notes</label>
+          <input type="text" id="donationNotes">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" data-close="donationModalOverlay">Cancel</button>
+        <button class="btn btn-primary" id="recordDonationBtn">Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Blood Request -->
+  <div class="overlay hidden" id="requestModalOverlay">
+    <div class="modal">
+      <h2 class="modal-title">New Blood Request</h2>
+      <div class="form-grid">
+        <div class="form-field form-field-wide">
+          <label>Hospital</label>
+          <select id="requestHospital"></select>
+        </div>
+        <div class="form-field">
+          <label>Blood Group</label>
+          <select id="requestBloodGroup">
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Units Requested</label>
+          <input type="number" id="requestUnits" value="1" min="1">
+        </div>
+        <div class="form-field">
+          <label>Request Date</label>
+          <input type="date" id="requestDate">
+        </div>
+        <div class="form-field">
+          <label>Required By</label>
+          <input type="date" id="requestRequiredBy">
+        </div>
+        <div class="form-field">
+          <label>Priority</label>
+          <select id="requestPriority">
+            <option>Normal</option>
+            <option>Urgent</option>
+            <option>Critical</option>
+          </select>
+        </div>
+        <div class="form-field form-field-wide">
+          <label>Notes</label>
+          <input type="text" id="requestNotes">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" data-close="requestModalOverlay">Cancel</button>
+        <button class="btn btn-primary" id="submitRequestBtn">Submit Request</button>
+      </div>
+    </div>
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
